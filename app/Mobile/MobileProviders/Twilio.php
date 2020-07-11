@@ -15,11 +15,15 @@ class Twilio implements MobileInterface
         $this->twilioVerifySid = $this->getServiceId();
     }
     
-    public function SendVerification($mobileNumber)
+    public function SendVerification(array $userData)
     {
-        $this->twilio->verify->v2->services($this->twilioVerifySid)
-            ->verifications
-            ->create($mobileNumber, "sms");
+        try {
+            $this->sendCode($userData['mobile']);
+            return 'sms';
+        } catch (\Throwable $th) {
+            $this->sendCode($userData['email'], 'email');
+            return 'email';
+        }
     }
 
     private function getTwilioClient()
@@ -29,12 +33,19 @@ class Twilio implements MobileInterface
         return new Client($twilio_sid, $token);
     }
 
+    private function sendCode($reciever, $channel = 'sms')
+    {
+        $this->twilio->verify->v2->services($this->twilioVerifySid)
+            ->verifications
+            ->create($reciever, $channel);
+    }
+
     private function getServiceId()
     {
         return config('twilio.TWILIO_VERIFY_SID');
     }
 
-    public function checkVerification($mobileNumber, $code)
+    public function checkVerification($reciever, $code)
     {
     }
 }

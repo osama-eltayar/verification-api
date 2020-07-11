@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\UserRequest;
 use App\Services\MobileServices\SendCodeService;
 
 class VerificationController extends Controller
 {
-    public function verify(Request $request, SendCodeService $sendCode)
+    public function verify(UserRequest $request, SendCodeService $sendCodeService)
     {
-        $request= $request->only(['mobile','email']);
-        $sendCode->make($request['mobile']);
-        return response()->json("message sent to your phone");
+        $message = $sendCodeService->make($request->only(['mobile','email']));
+        return response()->json($message);
     }
 }

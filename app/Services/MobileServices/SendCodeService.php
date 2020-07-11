@@ -11,8 +11,9 @@ class SendCodeService
     {
         $this->mobileProvider = $mobile;
     }
-    public function make($mobileNumber)
+    public function make(array $userData)
     {
-        $this->mobileProvider->SendVerification($mobileNumber);
+        $channel = $this->mobileProvider->SendVerification($userData);
+        return "$channel has been sent to you ";
     }
 }
