@@ -10,7 +10,6 @@ class VerificationController extends Controller
 {
     public function verify(UserRequest $request, SendCodeService $sendCodeService)
     {
-        $message = $sendCodeService->make($request->only(['mobile','email']));
-        return response()->json($message);
+        return $sendCodeService->make($request->only(['mobile','email']));
     }
 }

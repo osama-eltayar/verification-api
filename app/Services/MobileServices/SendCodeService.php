@@ -13,7 +13,15 @@ class SendCodeService
     }
     public function make(array $userData)
     {
-        $channel = $this->mobileProvider->SendVerification($userData);
-        return "$channel has been sent to you ";
+        try {
+            $channel = $this->mobileProvider->SendVerification($userData);
+            return response()->json([
+               "message" => "$channel has been sent to you "
+                ]) ;
+        } catch (\Throwable $th) {
+            return response()->json([
+                "message"=>"sorry try again later "
+            ], 500) ;
+        }
     }
 }
